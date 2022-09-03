@@ -33,8 +33,10 @@ sed '/[0-9]/d' limitstringlarge.txt > nonumerals.txt
 echo "Cleaning blank lines..."
 grep "\S" nonumerals.txt > noblanks.txt
 
-echo "Finalising cleaned file..."
-cat noblanks.txt > cleanwords.txt
+echo "Shuffling cleaned file..."
+shuf noblanks.txt > cleanedwords.txt
+
+echo "Wordlist cleaning complete!"
 
 rm concat.txt
 rm sorted.txt
