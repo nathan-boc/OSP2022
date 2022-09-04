@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define WORDLIST_CLEAN "cleanWords.txt"
+#define WORDLIST_CLEAN "cleanWords"
 
-// extern void Task1Filter(char wordlistFolder[], char cleanFile[]);
+extern void Task1Filter(char wordlistFolder[], char cleanFile[]);
 
 int main(int argc, char *argv[]) {
 
@@ -12,16 +12,20 @@ int main(int argc, char *argv[]) {
 		return(EXIT_FAILURE);
 
 	} else if(argc == 2) {
-		printf("One parameter passed successfully.");
+		printf("One parameter passed successfully.\n");
+
 		// If only one arg is passed, provide the default cleanfile name
+		Task1Filter(argv[1], WORDLIST_CLEAN);
 		
 		return(EXIT_SUCCESS);
 
 	} else {
-		printf("Two parameters passed successfully.");
+		printf("Two parameters passed successfully.\n");
+
 		// If two args are passed, second arg is used as the cleanfile name
+		Task1Filter(argv[1], argv[2]);
 
 		return(EXIT_SUCCESS);
 	} 
-	
+
 }
