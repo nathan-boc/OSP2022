@@ -1,16 +1,27 @@
-extern void Task1Filter(char wordlistFolder[], char cleanFile[]);
+#include <stdio.h>
+#include <stdlib.h>
+
+#define WORDLIST_CLEAN "cleanWords.txt"
+
+// extern void Task1Filter(char wordlistFolder[], char cleanFile[]);
 
 int main(int argc, char *argv[]) {
 
-	// check if any arguments were passed
-		// must have two arguments, with one argument minimum
+	if(argc == 1 || argc > 3) {
+		fprintf(stderr, "Error: Incorrect number of parameters.\n");
+		return(EXIT_FAILURE);
 
+	} else if(argc == 2) {
+		printf("One parameter passed successfully.");
+		// If only one arg is passed, provide the default cleanfile name
+		
+		return(EXIT_SUCCESS);
 
-	// pass a default name for the output text file if only one arg is given - cleanWords.txt
+	} else {
+		printf("Two parameters passed successfully.");
+		// If two args are passed, second arg is used as the cleanfile name
 
-	// if 0 or >2 args, send error
-
-	// Call Task1Filter
+		return(EXIT_SUCCESS);
+	} 
 	
-
 }
