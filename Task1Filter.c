@@ -1,4 +1,4 @@
-void Task1Filter(char wordlistFolder[], char cleanWords[]) {
+void Task1Filter(char wordlistFolder[], char cleanFile[]) {
 
 // Access wordlist folder for the required files
 
