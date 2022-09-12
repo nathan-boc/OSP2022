@@ -1,4 +1,4 @@
-rm cleanwords.txt
+rm shell-cleanedwords.txt
 
 # Concatenate all word files
 echo "Concatenating word list files..."
@@ -33,8 +33,8 @@ sed '/[0-9]/d' limitstringlarge.txt > nonumerals.txt
 echo "Cleaning blank lines..."
 grep "\S" nonumerals.txt > noblanks.txt
 
-echo "Shuffling cleaned file..."
-shuf noblanks.txt > cleanedwords.txt
+echo "Finalising cleaned file..."
+cat noblanks.txt > shell-cleanedwords.txt
 
 echo "Wordlist cleaning complete!"
 

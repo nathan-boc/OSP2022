@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define WORDLIST_CLEAN "cleanWords"
+#define WORDLIST_CLEAN "cleanedwords.txt"
 
 extern void Task1Filter(char wordlistFolder[], char cleanFile[]);
 
