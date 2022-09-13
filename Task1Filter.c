@@ -7,7 +7,6 @@
 #define MIN_CHARS 3
 #define MAX_CHARS 15
 
-#define MAX_LIST_LENGTH 5000000
 #define BUFFER_SIZE 300
 
 int cmpstr(void const *a, void const *b) { 
@@ -37,6 +36,8 @@ void Task1Filter(char dirtyFile[], char cleanFile[]) {
 	// Loop to retrieve words from list
 	while(fgets(buffer, BUFFER_SIZE, fp) != NULL) {
 
+		printf("STRING: %s", buffer);
+
 		isValidWord = true;
 
 		// Loop to check the retrieved word - excludes the end newline character
@@ -49,8 +50,14 @@ void Task1Filter(char dirtyFile[], char cleanFile[]) {
 		}
 
 		// Checks if word is within the 3-15 character limit
-		if(strlen(buffer) - 2 > MAX_CHARS || strlen(buffer) - 2 < MIN_CHARS) {
+		if(strlen(buffer) - 1 > MAX_CHARS) {
 			isValidWord = false;
+			printf("Bigger than 15 - ");
+		}
+
+		if(strlen(buffer) - 1 < MIN_CHARS) {
+			isValidWord = false;
+			printf("Less than 3 - ");
 		}
 
 
@@ -59,6 +66,7 @@ void Task1Filter(char dirtyFile[], char cleanFile[]) {
 
 			if(strcmp(buffer, allWords[i]) == 0) {
 				isValidWord = false;
+				printf("Already Exists - ");
 			}
 		}
 
@@ -72,12 +80,18 @@ void Task1Filter(char dirtyFile[], char cleanFile[]) {
 			allWords = realloc(allWords, wordCount * sizeof(char*));
 
 			// Allocate memory for the characters in the new word
-			allWords[wordCount - 1] = malloc(strlen(buffer) * sizeof(char));
+			allWords[wordCount - 1] = malloc((strlen(buffer) + 1) * sizeof(char));
 
-			// TODO - CHECKS IF alloc was successful - if alloc == null, error
-
+			// Checks if memory allocation was successful
+			if(allWords == NULL || allWords[wordCount - 1] == NULL) {
+				fprintf(stderr, "Memory allocation failed.");
+			}
 
 			strcpy(allWords[wordCount - 1], buffer);
+
+			printf("ACCEPTED\n\n");
+		} else {
+			printf("REJECTED\n\n");
 		}
 
 		// Reset contents of the buffer
