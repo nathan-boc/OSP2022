@@ -36,8 +36,6 @@ void Task1Filter(char dirtyFile[], char cleanFile[]) {
 	// Loop to retrieve words from list
 	while(fgets(buffer, BUFFER_SIZE, fp) != NULL) {
 
-		printf("STRING: %s", buffer);
-
 		isValidWord = true;
 
 		// Loop to check the retrieved word - excludes the end newline character
@@ -52,12 +50,10 @@ void Task1Filter(char dirtyFile[], char cleanFile[]) {
 		// Checks if word is within the 3-15 character limit
 		if(strlen(buffer) - 1 > MAX_CHARS) {
 			isValidWord = false;
-			printf("Bigger than 15 - ");
 		}
 
 		if(strlen(buffer) - 1 < MIN_CHARS) {
 			isValidWord = false;
-			printf("Less than 3 - ");
 		}
 
 
@@ -66,13 +62,10 @@ void Task1Filter(char dirtyFile[], char cleanFile[]) {
 
 			if(strcmp(buffer, allWords[i]) == 0) {
 				isValidWord = false;
-				printf("Already Exists - ");
 			}
 		}
 
 		if(isValidWord == true) {
-			
-			//printf("accepted: %s", buffer);
 
 			wordCount++;
 
@@ -89,56 +82,52 @@ void Task1Filter(char dirtyFile[], char cleanFile[]) {
 
 			strcpy(allWords[wordCount - 1], buffer);
 
-			printf("ACCEPTED\n\n");
-		} else {
-			printf("REJECTED\n\n");
+			printf("ACCEPTED WORD: %s", buffer);
 		}
 
 		// Reset contents of the buffer
 		memset(buffer,'\0',strlen(buffer));
 	}
 
-		printf("\n---------\n\n");
+	printf("\n---------\n\n");
 
-		fclose(fp);
+	fclose(fp);
 
-		printf("Input read successfully.\n\n");
+	printf("Input read successfully.\n\n");
 
-		printf("Sorting all words...\n");
+	printf("Sorting all words...\n");
 
-		qsort(allWords, wordCount, sizeof(char*), cmpstr);
+	qsort(allWords, wordCount, sizeof(char*), cmpstr);
 
-		printf("All words sorted.\n\n");
+	printf("All words sorted.\n\n");
 
 
-		// Output formatted words to file
-		printf("Writing to output file...\n");
+	// Output formatted words to file
+	printf("Writing to output file...\n");
 
-		// Setup output stream to link to the output file
-		FILE *fo;
-		fo = fopen(cleanFile, "w");
+	// Setup output stream to link to the output file
+	FILE *fo;
+	fo = fopen(cleanFile, "w");
 
-		// Write all words from the array to the output stream
-		for(int i = 0; i < wordCount; i++) {
-			fputs(allWords[i], fo);
-		}
-
-		fclose(fo);
-
-		printf("All words written to file \'%s\'\n\n", cleanFile);
-		
-
-		// Free array memory
-		printf("Freeing memory...\n");
-
-		// Free memory for the wordlist array
-		for(int i = 0; i < wordCount; i++) {
-			free(allWords[i]);
-		}
-
-		free(allWords);
-
-		printf("Wordlist array memory freed.\n\n");
-		
+	// Write all words from the array to the output stream
+	for(int i = 0; i < wordCount; i++) {
+		fputs(allWords[i], fo);
 	}
+
+	fclose(fo);
+
+	printf("All words written to file \'%s\'\n\n", cleanFile);
+
+	// Free array memory
+	printf("Freeing memory...\n");
+
+	// Free memory for the wordlist array
+	for(int i = 0; i < wordCount; i++) {
+		free(allWords[i]);
+	}
+
+	free(allWords);
+
+	printf("Wordlist array memory freed.\n\n");
+}
 
