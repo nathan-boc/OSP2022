@@ -16,16 +16,13 @@ int main(int argc, char *argv[]) {
 
 		// If only one arg is passed, provide the default cleanfile name
 		Task1Filter(argv[1], WORDLIST_CLEAN);
-		
-		return(EXIT_SUCCESS);
 
 	} else {
 		printf("Two parameters passed successfully.\n");
 
 		// If two args are passed, second arg is used as the cleanfile name
 		Task1Filter(argv[1], argv[2]);
-
-		return(EXIT_SUCCESS);
 	} 
 
+	return(EXIT_SUCCESS);
 }
