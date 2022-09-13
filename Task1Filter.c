@@ -4,125 +4,85 @@
 #include <ctype.h>
 #include <stdbool.h>
 
-#define MAX_LIST_LENGTH 5000000
-#define MAX_WORD_LENGTH 300
-
 #define MIN_CHARS 3
 #define MAX_CHARS 15
 
-#define testWordList "./wordlists/wlist_match1.txt"
+#define MAX_LIST_LENGTH 5000000
+#define BUFFER_SIZE 300
 
 int cmpstr(void const *a, void const *b) { 
     return strcmp(*(const char **)a, *(const char **)b);
 }
 
-void Task1Filter(char wordlistFolder[], char cleanFile[]) {
+void Task1Filter(char dirtyFile[], char cleanFile[]) {
 
 	printf("\nRunning Task1Filter...\n\n");
 
+	// Array of strings to hold all words
+	char** allWords = malloc(sizeof(char*));
 
-	printf("Allocating memory for wordlist...\n");
+	// Setup input stream to link to the input file
+	FILE *fp;
+	fp = fopen(dirtyFile, "r");
 
-	// Allocate memory for array to hold all words
-	char** allWords = malloc(MAX_LIST_LENGTH * sizeof(char*));
+	char buffer[BUFFER_SIZE];
+	int wordCount = 0;
 
-	// Allocate memory for each string in the array
-	for(int i = 0; i < MAX_LIST_LENGTH; i++) {
-		allWords[i] = malloc(MAX_WORD_LENGTH * sizeof(char));
-	}
+	bool isValidWord;
 
-	if(allWords == NULL) {
-		printf("ERROR: Unable to allocate memory.\n");
-		exit(EXIT_FAILURE);
-	
-	} else {
+	printf("Reading from input file %s...\n", dirtyFile);
 
-		printf("Memory allocated for wordlist array.\n\n");
+	printf("\n---------\n\n");
 
+	// Loop to retrieve words from list
+	while(fgets(buffer, BUFFER_SIZE, fp) != NULL) {
 
-		// Read in words from wordlist
-		printf("Reading from input file %s...\n", wordlistFolder);
+		isValidWord = true;
 
-		printf("\n---------\n\n");
+		// Loop to check the retrieved word - excludes the end newline character
+		for(int i = 0; i < strlen(buffer) - 1; i++) {
 
-		// Setup input stream to link to the input file
-		FILE *fp;
-		char inputChar;
-		fp = fopen(wordlistFolder, "r");
-		
-		int currentWordIndex = 0;
-		int allWordsIndex = 0;
-
-		// Loop to assign each input character inside the wordlist array
-		while(inputChar != EOF) {
-			
-			inputChar = fgetc(fp);
-
-			if(inputChar != EOF) {
-			
-				// Checks if there is a numeral or punctuation character and if word is within 3-15 characters
-				if(ispunct(inputChar) || isdigit(inputChar) || (currentWordIndex > MAX_CHARS && inputChar != '\n') || (currentWordIndex < MIN_CHARS + 1 && inputChar == '\n')) {
-					
-					// Loop resets the current string in array
-					for(int i = 0; i < currentWordIndex; i++) {
-						allWords[allWordsIndex][i] = '\0';
-					}
-
-					// Move to next word
-					while(inputChar != '\n') {
-						inputChar = fgetc(fp);
-					}
-
-					currentWordIndex = 0;
-
-				} else {
-
-					// Add current character to the wordlist
-					allWords[allWordsIndex][currentWordIndex] = inputChar;
-
-					// Continue to next character if word is not complete
-					if(inputChar != '\n') {
-						currentWordIndex++;
-
-					} else {
-
-						// TODO: Remove leading and trailing whitespace
-
-						// Allocate memory for a substring
-						char* substring = malloc(currentWordIndex);
-
-						bool wordExists = false;
-
-						// Check if word already exists in the wordlist
-						for(int i = 0; i < allWordsIndex; i++) {
-
-							strncpy(substring, allWords[i], currentWordIndex + 1);
-
-							if(strcmp(substring, allWords[allWordsIndex]) == 0) {
-								wordExists = true;
-							}
-						}
-
-						free(substring);
-
-						// Move on to next word if word exists, else it will be overwritten
-						if(wordExists == false) {
-							printf("Added string: %s", allWords[allWordsIndex]);
-
-							allWordsIndex++;
-						}
-
-						wordExists = false;	
-						currentWordIndex = 0;
-
-						// for loop to identify start and end character and then remove whitespaces (' ' or '\t')
-
-
-						
-					}
-				}
-			}			
+			// Flag words containing numbers and punctuations as invalid
+			if(ispunct(buffer[i]) || isdigit(buffer[i])) {
+				isValidWord = false;
+			}
 		}
+
+		// Checks if word is within the 3-15 character limit
+		if(strlen(buffer) - 2 > MAX_CHARS || strlen(buffer) - 2 < MIN_CHARS) {
+			isValidWord = false;
+		}
+
+
+		// Checks if word already exists in the wordlist
+		for(int i = 0; i < wordCount; i++) {
+
+			if(strcmp(buffer, allWords[i]) == 0) {
+				isValidWord = false;
+			}
+		}
+
+		if(isValidWord == true) {
+			
+			//printf("accepted: %s", buffer);
+
+			wordCount++;
+
+			// Allocate memory for a new word in the list
+			allWords = realloc(allWords, wordCount * sizeof(char*));
+
+			// Allocate memory for the characters in the new word
+			allWords[wordCount - 1] = malloc(strlen(buffer) * sizeof(char));
+
+			// TODO - CHECKS IF alloc was successful - if alloc == null, error
+
+
+			strcpy(allWords[wordCount - 1], buffer);
+		}
+
+		// Reset contents of the buffer
+		memset(buffer,'\0',strlen(buffer));
+	}
 
 		printf("\n---------\n\n");
 
@@ -130,10 +90,9 @@ void Task1Filter(char wordlistFolder[], char cleanFile[]) {
 
 		printf("Input read successfully.\n\n");
 
-
 		printf("Sorting all words...\n");
 
-		qsort(allWords, allWordsIndex, sizeof(char*), cmpstr);
+		qsort(allWords, wordCount, sizeof(char*), cmpstr);
 
 		printf("All words sorted.\n\n");
 
@@ -146,7 +105,7 @@ void Task1Filter(char wordlistFolder[], char cleanFile[]) {
 		fo = fopen(cleanFile, "w");
 
 		// Write all words from the array to the output stream
-		for(int i = 0; i < allWordsIndex + 1; i++) {
+		for(int i = 0; i < wordCount; i++) {
 			fputs(allWords[i], fo);
 		}
 
@@ -159,27 +118,13 @@ void Task1Filter(char wordlistFolder[], char cleanFile[]) {
 		printf("Freeing memory...\n");
 
 		// Free memory for the wordlist array
-		for(int i = 0; i < MAX_LIST_LENGTH; i++) {
+		for(int i = 0; i < wordCount; i++) {
 			free(allWords[i]);
 		}
+
+		free(allWords);
 
 		printf("Wordlist array memory freed.\n\n");
 		
 	}
-	
 
-	
-
-
-	// Shuffle array of words
-
-
-}
-
-/*
-char* removeWhiteSpace(char words[][MAX_WORD_LENGTH]) {
-
-	printf("method called");
-	return &words;
-}
-*/

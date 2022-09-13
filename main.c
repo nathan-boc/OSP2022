@@ -3,7 +3,7 @@
 
 #define WORDLIST_CLEAN "cleanedwords.txt"
 
-extern void Task1Filter(char wordlistFolder[], char cleanFile[]);
+extern void Task1Filter(char dirtyFile[], char cleanFile[]);
 
 int main(int argc, char *argv[]) {
 

@@ -1,18 +1,14 @@
 rm shell-cleanedwords.txt
 
-# Concatenate all word files
-echo "Concatenating word list files..."
-for f in ./wordlists/*.txt
-do
-	cat $f  >> concat.txt
-	echo >> concat.txt
-done
+# Reading word file
+echo "\nReading word list file..."
+cat $1 >> dirtyfile.txt
 
 
-# Clean words line by line from the concatenated file
+# Clean words line by line from the input file
 
 echo "Trimming whitespaces..."
-sed 's/^[[:blank:]]*//;s/[[:blank:]]*$//' concat.txt > nowhitespace.txt
+sed 's/^[[:blank:]]*//;s/[[:blank:]]*$//' dirtyfile.txt > nowhitespace.txt
 
 echo "Sorting into alphabetical order..."
 sort nowhitespace.txt > sorted.txt
@@ -36,9 +32,9 @@ grep "\S" nonumerals.txt > noblanks.txt
 echo "Finalising cleaned file..."
 cat noblanks.txt > shell-cleanedwords.txt
 
-echo "Wordlist cleaning complete!"
+echo "Wordlist cleaning complete!\n"
 
-rm concat.txt
+rm dirtyfile.txt
 rm sorted.txt
 rm noduplicates.txt
 rm nopunct.txt
