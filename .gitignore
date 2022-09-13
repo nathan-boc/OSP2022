@@ -1,1 +1,5 @@
 .vscode/
+run
+shell-cleanedwords.txt
+testwords.txt
+cleanedwords.txt
